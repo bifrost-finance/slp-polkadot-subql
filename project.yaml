@@ -1,0 +1,49 @@
+specVersion: 0.2.0
+name: slp-polkadot-subql
+version: 1.0.0
+description: ''
+repository: 'https://github.com/bifrost-finance/slp-kusama-subql.git'
+schema:
+  file: ./schema.graphql
+network:
+  genesisHash: '0xe2fac66a7e047b07c2318ca290a3481d94931069a26660320ceb02c76081f244'
+  endpoint: 'wss://kusama-test-1.liebi.com/ws'
+dataSources:
+  - kind: substrate/Runtime
+    startBlock: 1
+    mapping:
+      file: ./dist/index.js
+      handlers:
+        - handler: staking
+          kind: substrate/BlockHandler
+        - handler: handleStakingErapaid
+          kind: substrate/EventHandler
+          filter:
+            module: staking
+            method: EraPaid
+        - handler: handleStakingBonded
+          kind: substrate/EventHandler
+          filter:
+            module: staking
+            method: Bonded
+        - handler: handleStakinUnbonded
+          kind: substrate/EventHandler
+          filter:
+            module: staking
+            method: Unbonded
+        - handler: handleStakingWithdrawn
+          kind: substrate/EventHandler
+          filter:
+            module: staking
+            method: Withdrawn
+        - handler: handleStakingPayoutstarte
+          kind: substrate/EventHandler
+          filter:
+            module: staking
+            method: PayoutStarted
+        - handler: handleParaInherent
+          kind: substrate/CallHandler
+          filter:
+            module: paraInherent
+            method: enter
+            success: true
