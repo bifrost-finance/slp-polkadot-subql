@@ -6,11 +6,11 @@ repository: 'https://github.com/bifrost-finance/slp-kusama-subql.git'
 schema:
   file: ./schema.graphql
 network:
-  genesisHash: '0xe2fac66a7e047b07c2318ca290a3481d94931069a26660320ceb02c76081f244'
-  endpoint: 'wss://kusama-test-1.liebi.com/ws'
+  genesisHash: '0x91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3'
+  endpoint: 'wss://polkadot.api.onfinality.io/public-ws'
 dataSources:
   - kind: substrate/Runtime
-    startBlock: 1
+    startBlock: 11930320
     mapping:
       file: ./dist/index.js
       handlers:
