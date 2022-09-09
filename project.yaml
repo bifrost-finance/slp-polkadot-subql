@@ -41,9 +41,8 @@ dataSources:
           filter:
             module: staking
             method: PayoutStarted
-        - handler: handleParaInherent
-          kind: substrate/CallHandler
+        - handler: handleRemark
+          kind: substrate/EventHandler
           filter:
-            module: paraInherent
-            method: enter
-            success: true
+            module: system
+            method: Remarked

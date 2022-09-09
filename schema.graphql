@@ -69,7 +69,6 @@ type Remarked @entity {
   block_height: Int!
   block_timestamp: Date!
   account: String
-  result: String
   hash: String
 }
 

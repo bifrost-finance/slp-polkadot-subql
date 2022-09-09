@@ -9,6 +9,7 @@ import {
   StakingUnbonded,
   StakingWithdrawn,
   StakingInfo,
+  Remarked
 } from "../types";
 
 export async function staking(block: SubstrateBlock): Promise<void> {
@@ -32,7 +33,7 @@ export async function staking(block: SubstrateBlock): Promise<void> {
     record.data = data.toString();
     await record.save();
   }
-  const result = await api.query.system.account('F7fq1jMmNj5j2jAHcBxgM26JzUn2N4duXu1U4UZNdkfZEPV');
+  const result = await api.query.system.account('13YMK2eeopZtUNpeHnJ1Ws2HqMQG6Ts9PGCZYGyFbSYoZfcm');
   const balanceRecord = new ParaAccountInfo(blockNumber.toString());
   balanceRecord.block_height = blockNumber;
   balanceRecord.block_timestamp = block.timestamp;
@@ -144,6 +145,26 @@ export async function handleStakingPayoutstarte(
   record.block_timestamp = event.block.timestamp;
   record.era_index = era_index.toString();
   record.account = account.toString();
+
+  await record.save();
+}
+
+export async function handleRemark(
+    event: SubstrateEvent
+): Promise<void> {
+  const blockNumber = event.block.block.header.number.toNumber();
+  const record = new Remarked(`${blockNumber}-${event.idx.toString()}`);
+  const {
+    event: {
+      data: [account, hash],
+    },
+  } = event;
+
+  record.event_id = event.idx;
+  record.block_height = blockNumber;
+  record.block_timestamp = event.block.timestamp;
+  record.account = account.toString();
+  record.hash = hash.toString();
 
   await record.save();
 }
