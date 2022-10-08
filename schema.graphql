@@ -25,6 +25,7 @@ type StakingErapaid @entity {
   era_index: String
   validator_payout: BigInt
   remainder: BigInt
+  total_staked: BigInt
 }
 
 type StakingBonded @entity {
