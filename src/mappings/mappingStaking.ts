@@ -56,7 +56,7 @@ export async function handleStakingErapaid(
       data: [index, validator_payout, remainder],
     },
   } = event;
-  const erasTotalStake= await api.query.staking.erasTotalStake(index);
+  const erasTotalStake= await api.query.staking.erasTotalStake(Number(index.toString())-1);
   record.event_id = event.idx;
   record.block_height = blockNumber;
   record.block_timestamp = event.block.timestamp;
