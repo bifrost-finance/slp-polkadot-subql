@@ -1,13 +1,20 @@
-specVersion: 0.2.0
+specVersion: 1.0.0
 name: slp-polkadot-subql
 version: 1.0.0
-description: ''
-repository: 'https://github.com/bifrost-finance/slp-kusama-subql.git'
+runner:
+  node:
+    name: "@subql/node"
+    version: "*"
+  query:
+    name: "@subql/query"
+    version: "*"
+description: This SubQuery project can be use as a starting point for Polkadot network
+repository: "https://github.com/bifrost-finance/slp-polkadot-subql.git"
 schema:
   file: ./schema.graphql
 network:
-  genesisHash: '0x91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3'
-  endpoint: 'wss://polkadot-rpc.liebi.com/ws'
+  chainId: "0x91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3"
+  endpoint: "wss://polkadot-rpc.liebi.com/ws"
 dataSources:
   - kind: substrate/Runtime
     startBlock: 11930320

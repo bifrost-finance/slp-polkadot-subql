@@ -5,10 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "subql build",
-    "prepack": "rm -rf dist && npm build",
-    "start:docker": "docker-compose pull && docker-compose up --remove-orphans",
-    "test": "jest",
-    "codegen": "./node_modules/.bin/subql codegen"
+    "prepack": "rm -rf dist && yarn build",
+    "codegen": "subql codegen"
   },
   "homepage": "https://github.com/subquery/subql-starter",
   "repository": "github:subquery/subql-starter",
@@ -20,9 +18,9 @@
   "author": "Bifrost",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@polkadot/api": "^7",
+    "@polkadot/api": "^9",
+    "@subql/cli": "latest",
     "@subql/types": "latest",
-    "typescript": "^4.4.4",
-    "@subql/cli": "latest"
+    "typescript": "^4.1.3"
   }
 }
