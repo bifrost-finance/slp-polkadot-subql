@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    k8s-app: vodt-polkadot-subql
+    qcloud-app: vodt-polkadot-subql
+  name: vodt-polkadot-subql
+  namespace: slp
+spec:
+  selector:
+    matchLabels:
+      k8s-app: vodt-polkadot-subql
+      qcloud-app: vodt-polkadot-subql
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        k8s-app: vodt-polkadot-subql
+        qcloud-app: vodt-polkadot-subql
+    spec:
+      affinity: {}
+      containers:
+      - args:
+        - -f=/app
+        - --local
+        - --timestamp-field
+        env:
+        - name: DB_USER
+          value: postgres
+        - name: DB_PASS
+          value: Newhope@1
+        - name: DB_DATABASE
+          value: slp_polkadot_polkadot
+        - name: DB_HOST
+          value: 172.19.64.11
+        - name: DB_PORT
+          value: "5432"
+        image: harbor.liebi.com/slp-vmovr/slp-polkadot-subql:v1.0
+        imagePullPolicy: Always
+        name: vodt-polkadot-subql
+        resources:
+          limits:
+            cpu: "2"
+            memory: 4Gi
+          requests:
+            cpu: 125m
+            memory: 256Mi
+      imagePullSecrets:
+      - name: harbor
