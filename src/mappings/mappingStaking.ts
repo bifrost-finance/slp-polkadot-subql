@@ -37,10 +37,10 @@ export async function staking(block: SubstrateBlock): Promise<void> {
   const balanceRecord = new ParaAccountInfo(blockNumber.toString());
   balanceRecord.block_height = blockNumber;
   balanceRecord.block_timestamp = block.timestamp;
-  balanceRecord.free = (result.data.free as Balance).toBigInt();
-  balanceRecord.reserved =(result.data.reserved as Balance).toBigInt();
-  balanceRecord.miscFrozen =(result.data.miscFrozen as Balance).toBigInt();
-  balanceRecord.feeFrozen =(result.data.feeFrozen as Balance).toBigInt();
+  balanceRecord.free = (result.data.free as Balance)?.toBigInt();
+  balanceRecord.reserved =(result.data.reserved as Balance)?.toBigInt();
+  balanceRecord.miscFrozen =(result.data.miscFrozen as Balance)?.toBigInt();
+  balanceRecord.feeFrozen =(result.data.feeFrozen as Balance)?.toBigInt();
 
   await balanceRecord.save();
   return;
