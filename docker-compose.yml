@@ -27,4 +27,3 @@ services:
       - ./:/app
     command:
       - -f=/app
-      - --local

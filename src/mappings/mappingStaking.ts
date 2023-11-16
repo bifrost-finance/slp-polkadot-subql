@@ -38,9 +38,20 @@ export async function staking(block: SubstrateBlock): Promise<void> {
   balanceRecord.block_height = blockNumber;
   balanceRecord.block_timestamp = block.timestamp;
   balanceRecord.free = (result.data.free as Balance)?.toBigInt();
-  balanceRecord.reserved =(result.data.reserved as Balance)?.toBigInt();
-  balanceRecord.miscFrozen =(result.data.miscFrozen as Balance)?.toBigInt();
-  balanceRecord.feeFrozen =(result.data.feeFrozen as Balance)?.toBigInt();
+  balanceRecord.reserved = (result.data.reserved as Balance)?.toBigInt();
+  balanceRecord.feeFrozen = (result.data.frozen as Balance)?.toBigInt();
+
+  const delegators = await Promise.all(
+    [
+      "14vtfeKAVKh1Jzb3s7e43SqZ3zB5MLsdCxZPoKDxeoCFKLu5",
+      "14QkQ7wVVDRrhbC1UqHsFwKFUns1SRud94CXMWGHWB8Jhtro",
+      "13hLwqcVHqjiJMbZhR9LtfdhoxmTdssi7Kp8EJaW2yfk3knK",
+    ].map(async (account) => (await api.query.system.account(account)).data.free)
+  ) as unknown as number[];
+
+  // save delegators amount in miscFrozen
+  balanceRecord.miscFrozen = delegators.reduce((a, c) => BigInt(a) + BigInt(c), BigInt(0)) as unknown as bigint;
+
 
   await balanceRecord.save();
   return;
@@ -56,7 +67,7 @@ export async function handleStakingErapaid(
       data: [index, validator_payout, remainder],
     },
   } = event;
-  const erasTotalStake= await api.query.staking.erasTotalStake(Number(index.toString())-1);
+  const erasTotalStake = await api.query.staking.erasTotalStake(Number(index.toString()) - 1);
   record.event_id = event.idx;
   record.block_height = blockNumber;
   record.block_timestamp = event.block.timestamp;
@@ -151,7 +162,7 @@ export async function handleStakingPayoutstarte(
 }
 
 export async function handleRemark(
-    event: SubstrateEvent
+  event: SubstrateEvent
 ): Promise<void> {
   const blockNumber = event.block.block.header.number.toNumber();
   const record = new Remarked(`${blockNumber}-${event.idx.toString()}`);
