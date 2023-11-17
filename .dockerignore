@@ -4,4 +4,3 @@ dist
 coverage
 tsconfig.tsbuildinfo
 .history
-yarn.lock
