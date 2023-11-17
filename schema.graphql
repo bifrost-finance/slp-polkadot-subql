@@ -63,14 +63,3 @@ type StakingPayoutstarte @entity {
   era_index: String
   account: String
 }
-
-type Remarked @entity {
-  id: ID!
-  event_id: Int!
-  block_height: Int!
-  block_timestamp: Date!
-  account: String
-  hash: String
-}
-
-

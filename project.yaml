@@ -55,8 +55,3 @@ dataSources:
           filter:
             module: staking
             method: PayoutStarted
-        - handler: handleRemark
-          kind: substrate/EventHandler
-          filter:
-            module: system
-            method: Remarked
