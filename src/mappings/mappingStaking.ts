@@ -15,38 +15,41 @@ export async function staking(block: SubstrateBlock): Promise<void> {
   const blockNumber = (
     block.block.header.number as Compact<BlockNumber>
   ).toBigInt();
-  const stakingEvents = block.events.filter(
-    (e) => e.event.section === "staking"
-  ) as unknown as SubstrateEvent[];
+  if(Number(blockNumber) % 50 === 0){
+    const result = await api.query.system.account('13YMK2eeopZtUNpeHnJ1Ws2HqMQG6Ts9PGCZYGyFbSYoZfcm');
+    const balanceRecord = new ParaAccountInfo(blockNumber.toString(), blockNumber, block.timestamp);
 
-  for (let stakingEvent of stakingEvents) {
-    const {
-      event: { data, method },
-    } = stakingEvent;
-    const record = new StakingInfo(blockNumber.toString() + "-" + stakingEvent.idx.toString(), blockNumber, block.timestamp, method.toString(), data.toString());
+    balanceRecord.free = (result.data.free as Balance)?.toBigInt();
+    balanceRecord.reserved = (result.data.reserved as Balance)?.toBigInt();
+    balanceRecord.feeFrozen = (result.data.frozen as Balance)?.toBigInt();
 
-    await record.save();
+    const delegators = await Promise.all(
+        [
+          "14vtfeKAVKh1Jzb3s7e43SqZ3zB5MLsdCxZPoKDxeoCFKLu5",
+          "14QkQ7wVVDRrhbC1UqHsFwKFUns1SRud94CXMWGHWB8Jhtro",
+          "13hLwqcVHqjiJMbZhR9LtfdhoxmTdssi7Kp8EJaW2yfk3knK",
+        ].map(async (account) => (await api.query.system.account(account)).data.free)
+    ) as unknown as number[];
+
+    // save delegators amount in miscFrozen
+    balanceRecord.miscFrozen = delegators.reduce((a, c) => BigInt(a) + BigInt(c), BigInt(0)) as unknown as bigint;
+
+
+    await balanceRecord.save();
   }
-  const result = await api.query.system.account('13YMK2eeopZtUNpeHnJ1Ws2HqMQG6Ts9PGCZYGyFbSYoZfcm');
-  const balanceRecord = new ParaAccountInfo(blockNumber.toString(), blockNumber, block.timestamp);
+  // const stakingEvents = block.events.filter(
+  //   (e) => e.event.section === "staking"
+  // ) as unknown as SubstrateEvent[];
 
-  balanceRecord.free = (result.data.free as Balance)?.toBigInt();
-  balanceRecord.reserved = (result.data.reserved as Balance)?.toBigInt();
-  balanceRecord.feeFrozen = (result.data.frozen as Balance)?.toBigInt();
+  // for (let stakingEvent of stakingEvents) {
+  //   const {
+  //     event: { data, method },
+  //   } = stakingEvent;
+  //   const record = new StakingInfo(blockNumber.toString() + "-" + stakingEvent.idx.toString(), blockNumber, block.timestamp, method.toString(), data.toString());
+  //
+  //   await record.save();
+  // }
 
-  const delegators = await Promise.all(
-    [
-      "14vtfeKAVKh1Jzb3s7e43SqZ3zB5MLsdCxZPoKDxeoCFKLu5",
-      "14QkQ7wVVDRrhbC1UqHsFwKFUns1SRud94CXMWGHWB8Jhtro",
-      "13hLwqcVHqjiJMbZhR9LtfdhoxmTdssi7Kp8EJaW2yfk3knK",
-    ].map(async (account) => (await api.query.system.account(account)).data.free)
-  ) as unknown as number[];
-
-  // save delegators amount in miscFrozen
-  balanceRecord.miscFrozen = delegators.reduce((a, c) => BigInt(a) + BigInt(c), BigInt(0)) as unknown as bigint;
-
-
-  await balanceRecord.save();
   return;
 }
 
